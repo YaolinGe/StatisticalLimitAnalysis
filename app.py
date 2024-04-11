@@ -60,9 +60,6 @@ if not data.empty:
 
     st.plotly_chart(fig)
 
-
-
-
 else:
     st.write("No data to plot.")
 
