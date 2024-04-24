@@ -1,3 +1,6 @@
+"""
+This app demonstrates the statistical limit analysis for making the statistical upper and lower bounds for the time series data.
+"""
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -12,6 +15,7 @@ if uploaded_file is not None:
 else:
     data = pd.DataFrame()
 
+number_of_replicates = st.sidebar.slider("Number of Replicates", 1, 1000, 100, 1)
 noise_level = st.sidebar.slider("Noise Level", 0.01, 2.0, 0.1, 0.01)
 time_shift_range = st.sidebar.slider("Time Shift Range", 0, 100, 20, 1)
 std_deviation = st.sidebar.slider("Std Deviation", 0.1, 10.0, 1.0, 0.1)
@@ -28,7 +32,7 @@ if not data.empty:
     timestamp = dataset[:, 0]
 
     # c1, replicate signals
-    signals = replicate_signals(dataset, number_of_replicas=100, noise_level=noise_level, noise_seed=0, time_shift_range=time_shift_range)
+    signals = replicate_signals(dataset, number_of_replicas=number_of_replicates, noise_level=noise_level, noise_seed=0, time_shift_range=time_shift_range)
 
     # c2, calculate the mean and standard deviation of the replicated signals
     mean = np.mean(signals, axis=0)
