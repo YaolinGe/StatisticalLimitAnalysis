@@ -20,11 +20,12 @@ class TestGaussianProcess(TestCase):
         self.x = np.linspace(0, 10, 100).reshape(-1, 1)
         # self.y = self.x * np.sin(self.x)
         self.y = self.x * np.sin(self.x) + np.random.normal(0, 0.1, self.x.shape)
-        index_even = np.arange(self.y.size)[::10]
-        index_train = index_even
-        # index_train = np.random.choice(np.arange(self.y.size), size=6, replace=False)
+        # index_even = np.arange(self.y.size)[::10]
+        # index_train = index_even
+        index_train = np.random.choice(np.arange(self.y.size), size=6, replace=False)
         x_train, y_train = self.x[index_train], self.y[index_train]
         self.gp = GaussianProcess(x_train, y_train)
+        self.mean_prediction, self.std_prediction = self.gp.gaussian_process.predict(self.x, return_std=True)
 
     def test_get_realized_sample(self):
         num_realizations = 10
@@ -34,4 +35,10 @@ class TestGaussianProcess(TestCase):
             plt.plot(self.x, realizations[:, i], lw=1, linestyle='--')
         plt.scatter(self.gp.x, self.gp.y, color="red", label="Training points")
         plt.plot(self.x, self.y, label=r"$f(x) = x \ sin(x)$", linestyle="dotted")
+        plt.fill_between(np.squeeze(self.x), self.mean_prediction - 1.96 * self.std_prediction,
+                         self.mean_prediction + 1.96 * self.std_prediction, alpha=0.3,
+                         label=r"95% Confidence interval")
+        plt.legend()
+        plt.xlabel("$x$")
+        plt.ylabel("$f(x)$")
         plt.show()
